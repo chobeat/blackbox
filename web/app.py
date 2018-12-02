@@ -1,37 +1,34 @@
+import os
+
 from flask import Flask
-import sqlite3 as lite
+import db
+from views import *
+def create_app(test_config=None):
+    app = Flask(__name__)
+    app.config.from_mapping(
+        SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path, 'blackbox.sqlite'),
+    )
 
-app = Flask(__name__)
-DATABASE = '/tmp/database.db'
+    db.init_app(app)
+    app.register_blueprint(demo_bp)
 
-@app.route('/')
-def hello():
-	con = None
-	upd = None
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
 
-	con = lite.connect(DATABASE)
-	c = con.cursor()
-	try:  
-	  c.execute('CREATE TABLE counters (id INTEGER PRIMARY KEY AUTOINCREMENT, waktu INTEGER)')
-	except:
-	  pass
-	finally:
-	  c.execute('SELECT waktu from counters where id="1"')
-	  count = c.fetchone()
-	  if count == None:
-	    c.execute('INSERT INTO counters(waktu) values("1")')
-	    upd = 1
-	  elif count[0] == None:
-	    pass
-	  else:
-	    upd = int(count[0]) + 1
-	    c.execute('UPDATE counters SET waktu="'+ str(upd) +'" where id="1"')
-	  con.commit()
-	  c.close()
-	  if con:
-	    con.close()
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
-	return 'Hello World! I have been seen {} times.\n'.format(upd)
+    return app
+
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    create_app().run(host="0.0.0.0", debug=True)
