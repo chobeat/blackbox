@@ -1,16 +1,7 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Blackbox</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-    <h1>Blackbox</h1>
-</nav>
-<section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-    {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
-    Some content
-    {% block content %}{% endblock %}
-</section>
+<title>Upload new File</title>
+<h1>Upload new File</h1>
+<form method=post enctype=multipart/form-data action="/demo/analysis">
+    <p><input type=file name=file>
+        <input type=submit value=Upload>
+</form>

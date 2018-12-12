@@ -10,6 +10,8 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'blackbox.sqlite'),
     )
 
+    app.config["UPLOAD_FOLDER"]="/tmp/upload"
+
     db.init_app(app)
     app.register_blueprint(demo_bp)
 
@@ -25,6 +27,13 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.config["UPLOAD_FOLDER"])
+    except OSError:
+        pass
+
 
     return app
 
