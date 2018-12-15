@@ -3,14 +3,14 @@ import os
 from flask import Flask
 import db
 from views import *
+STATIC_FOLDER = "static"
 def create_app(test_config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder = STATIC_FOLDER)
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'blackbox.sqlite'),
     )
 
-    app.config["UPLOAD_FOLDER"]="/tmp/upload"
 
     db.init_app(app)
     app.register_blueprint(demo_bp)
@@ -30,7 +30,7 @@ def create_app(test_config=None):
 
     # ensure the instance folder exists
     try:
-        os.makedirs(app.config["UPLOAD_FOLDER"])
+        os.makedirs(demo_bp.static_folder)
     except OSError:
         pass
 

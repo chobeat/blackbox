@@ -30,5 +30,5 @@ class FaceDetector(object):
                 for facial_feature in face_landmarks.keys():
                     d.line(face_landmarks[facial_feature], width=1)
 
-            enriched_faces.append(d)
+            enriched_faces.append(pil_face)
         return enriched_faces

@@ -102,5 +102,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
+web/demo
+web/static
 web/.idea
