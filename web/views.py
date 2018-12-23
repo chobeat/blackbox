@@ -4,40 +4,48 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 import uuid
-from app import *
 from flask import current_app
-import logging
+from models import Images
 from io import BytesIO
 from face_detector import FaceDetector
 from PIL.Image import Image
-
-STATIC_FOLDER = "static"
-demo_bp = Blueprint('demo', __name__, url_prefix='/demo',static_url_path="", static_folder=STATIC_FOLDER)
-
+from app_creator import app
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@demo_bp.route('/upload', methods=['GET'])
+@app.route('/upload', methods=['GET'])
 def upload():
 
     return render_template('upload.html')
 
+def save_image_in_db(image_id,image_hash,filename):
+    pass
+
+def save_image_in_filesystem(image,filename):
+
+    path = os.path.join(demo_bp.static_folder,filename)
+    Image.save(image,open(path,"wb"),"jpeg")
+
+
 def _render_analysis_template(analysis_result):
     urls = []
     for image in analysis_result:
-        filename= str(uuid.uuid1())+".jpeg"
+        image_id=uuid.uuid1()
+        filename= str(image_id)+".jpeg"
         urls.append(url_for('static', filename=filename))
-        path = os.path.join(demo_bp.static_folder,filename)
-        Image.save(image,open(path,"wb"),"jpeg")
-
+        save_image_in_filesystem(image, filename)
+        image_hash=101
+        save_image_in_db(image_id,image_hash,filename)
     return render_template("analysis.html",faces=urls)
 
 def _analysis(file):
     return _render_analysis_template(FaceDetector(file).get_faces_with_features())
 
-@demo_bp.route('/analysis', methods=['POST'])
+@app.route('/analysis', methods=['POST'])
 def analysis():
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -59,3 +67,11 @@ def analysis():
             flash("File not allowed")
             return redirect(request.url)
 
+
+@app.route('/list', methods=['GET'])
+def list():
+
+    with app.app_context():
+        images = Images.query.all()
+
+    return str(len(images))

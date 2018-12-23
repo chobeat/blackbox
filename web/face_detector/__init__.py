@@ -32,3 +32,6 @@ class FaceDetector(object):
 
             enriched_faces.append(pil_face)
         return enriched_faces
+
+    def get_image_hash(self):
+        pass

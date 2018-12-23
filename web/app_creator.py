@@ -1,8 +1,6 @@
-import os
-
+from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-import db
-from views import *
+import os
 STATIC_FOLDER = "static"
 def create_app(test_config=None):
     app = Flask(__name__, static_folder = STATIC_FOLDER)
@@ -10,10 +8,8 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'blackbox.sqlite'),
     )
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/test.db'
 
-
-    db.init_app(app)
-    app.register_blueprint(demo_bp)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -30,7 +26,7 @@ def create_app(test_config=None):
 
     # ensure the instance folder exists
     try:
-        os.makedirs(demo_bp.static_folder)
+        os.makedirs(app.static_folder)
     except OSError:
         pass
 
@@ -38,6 +34,4 @@ def create_app(test_config=None):
     return app
 
 
-
-if __name__ == "__main__":
-    create_app().run(host="0.0.0.0", debug=True)
+app = create_app()
