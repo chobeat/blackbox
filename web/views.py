@@ -6,12 +6,14 @@ from PIL.Image import Image
 from flask import (
     flash, redirect, render_template, request, url_for
 )
-from werkzeug.utils import secure_filename
+from report_generator import generate_report
 
 from app_creator import app
 from face_detector import FaceDetector
 from models import Images
 from flask import current_app
+import collections
+from report_generator import render_suggestion
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -41,15 +43,17 @@ def _save_image(image):
 
 def _save_images(analysis_result):
     try:
-        urls, image_ids = zip(*map(_save_image,analysis_result))
+        return map(_save_image,analysis_result)
     except ValueError:
-        urls, image_ids = [],[]
-    return urls, image_ids
+        return []
 
 
 def _analysis(file):
-    urls, image_ids = _save_images(FaceDetector(file).get_faces_with_features())
-    return render_template("analysis.html", faces=urls, ids=image_ids)
+    face_images = FaceDetector(file).get_faces_with_features()
+    faces=[generate_report(url,image_id) for url,image_id in _save_images(face_images)]
+
+
+    return render_template("analysis.html", faces=faces, render_suggestion=render_suggestion)
 
 
 @app.route('/analysis', methods=['POST'])

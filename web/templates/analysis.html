@@ -3,11 +3,17 @@
 <h1>Analysis Completed</h1>
 
 <tbody>
+{% if faces %}
 {% for face in faces %}
 <tr>
-    <td><img src="{{ face }}"></td>
+    <td><img src="{{ face.image }}">
+    {%for suggestion in face.suggestions %}
+        {{render_suggestion(suggestion)}}
+        {%endfor%}
+    </td>
 </tr>
 {% endfor %}
-
-{{ ids }}
+{% else %}
+No faces detected
+{% endif %}
 </tbody>
