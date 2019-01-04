@@ -5,13 +5,15 @@
 <tbody>
 {% if faces %}
 {% for face in faces %}
-<tr>
-    <td><img src="{{ face.image }}">
+
+<div>
+<img src="{{ face.image }}">
     {%for suggestion in face.suggestions %}
+      <div>
         {{render_suggestion(suggestion)}}
-        {%endfor%}
-    </td>
-</tr>
+      </div>
+          {%endfor%}
+</div>
 {% endfor %}
 {% else %}
 No faces detected
