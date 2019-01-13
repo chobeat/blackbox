@@ -1,13 +1,11 @@
-<!doctype html>
-<title>Analysis Completed</title>
-<h1>Analysis Completed</h1>
-
+{% extends "base.html" %}
+{% block body %}
 <tbody>
 {% if faces %}
 {% for face in faces %}
 
 <div>
-<img src="{{ face.image }}">
+<img src="{{ face.image }}" height="100">
     {%for suggestion in face.suggestions %}
       <div>
         {{render_suggestion(suggestion)}}
@@ -19,3 +17,5 @@
 No faces detected
 {% endif %}
 </tbody>
+
+{% endblock %}
