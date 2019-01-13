@@ -29,7 +29,10 @@ def create_app(test_config=None):
         os.makedirs(app.static_folder)
     except OSError:
         pass
-
+    try:
+        os.makedirs(os.path.join(app.static_folder,"face_images"))
+    except OSError:
+        pass
 
     return app
 

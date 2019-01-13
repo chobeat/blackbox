@@ -103,5 +103,5 @@ venv.bak/
 .mypy_cache/
 
 web/demo
-web/static
+web/static/face_images
 web/.idea

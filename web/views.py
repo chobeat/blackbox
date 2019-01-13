@@ -28,7 +28,7 @@ def upload():
 
 
 def save_image_in_filesystem(image, filename):
-    path = os.path.join(current_app.static_folder, filename)
+    path = os.path.join(current_app.static_folder, "face_images",filename)
     Image.save(image, open(path, "wb"), "jpeg")
 
 
@@ -36,7 +36,7 @@ def _save_image(image):
     existing_uuid = Images.insert_if_not_exists(image)
     image_id = existing_uuid or uuid.uuid1()
     filename = Images.generate_filename(image_id)
-    url = url_for('static', filename=filename)
+    url = url_for('static',face_images="face_images",filename=filename)
     save_image_in_filesystem(image, filename)
     return (url, image_id)
 
